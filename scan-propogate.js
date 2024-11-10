@@ -10,7 +10,8 @@ export async function main(ns) {
     "getServerMinSecurityLevel",
     "getServerMaxMoney",
     "getServerSecurityLevel",
-    "getServerMoneyAvailable"
+    "getServerMoneyAvailable",
+    "scan"
   ].forEach((fn) => ns.disableLog(fn));
 
   while (connectedHosts.length > 0) {
@@ -19,7 +20,7 @@ export async function main(ns) {
     visited.add(host);
     let serverInfo = ns.getServer(host);
     if (serverInfo.purchasedByPlayer) {
-      ns.print("Declining to hack %s: Owned by player.", host)
+      // ns.print("Declining to hack %s: Owned by player.", host)
       continue;
     }
     if (serverInfo.requiredHackingSkill > player.skills.hacking) {
@@ -42,7 +43,7 @@ export async function main(ns) {
     var processes = ns.ps(host)
     //ns.print(processes.map(p => p.filename).join("|"))
     if (processes.length > 0) {
-      ns.print("Declining to hack " + host + ": Already hacked.")
+      // ns.print("Declining to hack " + host + ": Already hacked.")
       continue;
     }
     run_max_hwg(ns, host);
@@ -94,7 +95,7 @@ function run_max_hwg(ns, hostname){
     ns.printf("Not enough ram on %s to run %s (have %s, need %s)", hostname, script_name, ns.formatRam(freeRam), ns.formatRam(scriptRam))
     return
   }
-  
+
   const max_threads = Math.floor(freeRam / scriptRam);
 
   ns.printf("Starting %s on %s with %d threads", script_name, hostname, max_threads)
@@ -104,8 +105,8 @@ function run_max_hwg(ns, hostname){
   //   ns.print("No point in running hwg-abg, server can't collect money.")
   //   return;
   // }
-  var script_args = [    
-    hostname, 
+  var script_args = [
+    hostname,
     ns.getServerMinSecurityLevel(hostname),
     ns.getServerMaxMoney(hostname),
     ns.getServerSecurityLevel(hostname),
