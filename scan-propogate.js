@@ -16,7 +16,7 @@ export async function main(ns) {
 
   while (connectedHosts.length > 0) {
     const host = connectedHosts.pop();
-    ns.print("Considering host " + host);
+    // ns.print("Considering host " + host);
     visited.add(host);
     let serverInfo = ns.getServer(host);
     if (serverInfo.purchasedByPlayer) {
@@ -24,20 +24,20 @@ export async function main(ns) {
       continue;
     }
     if (serverInfo.requiredHackingSkill > player.skills.hacking) {
-      ns.printf("Declining to hack %s: Need more hacking skill (have %d, need %d)", host, player.skills.hacking, serverInfo.requiredHackingSkill)
+      ns.printf("WARN Declining to hack %s: Need more hacking skill (have %d, need %d)", host, player.skills.hacking, serverInfo.requiredHackingSkill)
       continue;
     }
     if (serverInfo.numOpenPortsRequired > portTools) {
-      ns.printf("Declining to hack %s: Need more port tools (have %d, need %d)", host, portTools, serverInfo.numOpenPortsRequired)
+      ns.printf("WARN Declining to hack %s: Need more port tools (have %d, need %d)", host, portTools, serverInfo.numOpenPortsRequired)
       continue;
     }
     if (!serverInfo.hasAdminRights) {
-      ns.print("Rooting " + host);
+      ns.print("INFO Rooting " + host);
       openPortsAndRoot(ns, host);
     }
     var nn = ns.scan(host).filter((h) => !visited.has(h));
     if (nn.length > 0) {
-      ns.print("Adding unvisited hosts " + nn.join(", "))
+      // ns.print("Adding unvisited hosts " + nn.join(", "))
       connectedHosts.push(...nn)
     }
     var processes = ns.ps(host)
@@ -92,7 +92,7 @@ function run_max_hwg(ns, hostname){
   const freeRam = ns.getServerMaxRam(hostname) - ns.getServerUsedRam(hostname)
   const scriptRam = ns.getScriptRam(script_name)
   if(ns.getServerMaxRam(hostname) < 2){
-    ns.printf("Not enough ram on %s to run %s (have %s, need %s)", hostname, script_name, ns.formatRam(freeRam), ns.formatRam(scriptRam))
+    ns.printf("WARN Not enough ram on %s to run %s (have %s, need %s)", hostname, script_name, ns.formatRam(freeRam), ns.formatRam(scriptRam))
     return
   }
 
